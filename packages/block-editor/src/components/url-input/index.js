@@ -230,7 +230,7 @@ class URLInput extends Component {
 	}
 
 	render() {
-		const { label, value = '', autoFocus = true, instanceId, className } = this.props;
+		const { label, value = '', autoFocus = true, instanceId, className, isFullWidth, hasBorder } = this.props;
 		const { showSuggestions, suggestions, selectedSuggestion, loading } = this.state;
 		const id = `url-input-control-${ instanceId }`;
 
@@ -242,11 +242,13 @@ class URLInput extends Component {
 			<BaseControl
 				label={ label }
 				id={ id }
-				className={ classnames( 'editor-url-input block-editor-url-input', className ) }
+				className={ classnames( 'editor-url-input block-editor-url-input', className, {
+					'is-full-width': isFullWidth,
+					'has-border': hasBorder,
+				} ) }
 			>
 				<input
 					autoFocus={ autoFocus }
-					id={ id }
 					type="text"
 					aria-label={ __( 'URL' ) }
 					required
