@@ -230,7 +230,7 @@ class URLInput extends Component {
 	}
 
 	render() {
-		const { label, value = '', autoFocus = true, instanceId, className, id, isFullWidth, hasBorder } = this.props;
+		const { label, value = '', autoFocus = true, instanceId, className, isFullWidth, hasBorder } = this.props;
 		const { showSuggestions, suggestions, selectedSuggestion, loading } = this.state;
 		const id = `url-input-control-${ instanceId }`;
 
@@ -250,7 +250,6 @@ class URLInput extends Component {
 				<input
 					id={ id }
 					autoFocus={ autoFocus }
-					id={ id }
 					type="text"
 					aria-label={ __( 'URL' ) }
 					required
