@@ -37,7 +37,7 @@ function render_block_core_latest_posts( $attributes ) {
 	foreach ( $recent_posts as $post ) {
 		$title = get_the_title( $post );
 		if ( ! $title ) {
-			$title = __( '(Untitled)' );
+			$title = __( '(no title)' );
 		}
 		$list_items_markup .= sprintf(
 			'<li><a href="%1$s">%2$s</a>',
@@ -70,7 +70,7 @@ function render_block_core_latest_posts( $attributes ) {
 				$list_items_markup .= sprintf(
 					'<a href="%1$s">%2$s</a></div>',
 					esc_url( get_permalink( $post ) ),
-					__( 'Read More' )
+					__( 'Read more' )
 				);
 			} else {
 				$list_items_markup .= sprintf(
