@@ -12,7 +12,7 @@ import { withDispatch, withSelect } from '@wordpress/data';
 import { pasteHandler, children as childrenSource, getBlockTransforms, findTransform } from '@wordpress/blocks';
 import { withInstanceId, compose } from '@wordpress/compose';
 import {
-	RichText,
+	__experimentalRichText as RichText,
 	__unstableCreateElement,
 	isEmpty,
 	__unstableIsEmptyLine as isEmptyLine,
@@ -21,7 +21,7 @@ import {
 	create,
 	replace,
 	split,
-	LINE_SEPARATOR,
+	__UNSTABLE_LINE_SEPARATOR as LINE_SEPARATOR,
 	toHTMLString,
 	slice,
 } from '@wordpress/rich-text';
@@ -336,6 +336,7 @@ class RichTextWrapper extends Component {
 			didAutomaticChange,
 			undo,
 			placeholder,
+			keepPlaceholderOnFocus,
 			// eslint-disable-next-line no-unused-vars
 			allowedFormats,
 			withoutInteractiveFormatting,
@@ -383,7 +384,10 @@ class RichTextWrapper extends Component {
 				selectionEnd={ selectionEnd }
 				onSelectionChange={ onSelectionChange }
 				tagName={ tagName }
-				className={ classnames( classes, className, { 'is-selected': originalIsSelected } ) }
+				className={ classnames( classes, className, {
+					'is-selected': originalIsSelected,
+					'keep-placeholder-on-focus': keepPlaceholderOnFocus,
+				} ) }
 				placeholder={ placeholder }
 				allowedFormats={ adjustedAllowedFormats }
 				withoutInteractiveFormatting={ withoutInteractiveFormatting }
@@ -471,6 +475,8 @@ const RichTextContainer = compose( [
 				selectionStart.clientId === clientId &&
 				selectionStart.attributeKey === identifier
 			);
+		} else if ( isSelected ) {
+			isSelected = selectionStart.clientId === clientId;
 		}
 
 		return {
