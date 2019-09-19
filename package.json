@@ -62,7 +62,8 @@
 		"@wordpress/token-list": "file:packages/token-list",
 		"@wordpress/url": "file:packages/url",
 		"@wordpress/viewport": "file:packages/viewport",
-		"@wordpress/wordcount": "file:packages/wordcount"
+		"@wordpress/wordcount": "file:packages/wordcount",
+		"fsevents": "1.2.9"
 	},
 	"devDependencies": {
 		"@actions/core": "1.0.0",
@@ -89,6 +90,7 @@
 		"@wordpress/npm-package-json-lint-config": "file:packages/npm-package-json-lint-config",
 		"@wordpress/postcss-themes": "file:packages/postcss-themes",
 		"@wordpress/scripts": "file:packages/scripts",
+		"ajv": "6.10.2",
 		"babel-plugin-inline-json-import": "0.3.2",
 		"babel-plugin-react-native-classname-to-style": "1.2.2",
 		"babel-plugin-react-native-platform-specific-extensions": "1.1.1",
@@ -101,7 +103,7 @@
 		"cross-env": "3.2.4",
 		"cssnano": "4.1.10",
 		"deep-freeze": "0.0.1",
-		"enzyme": "3.9.0",
+		"enzyme": "2.9.1",
 		"eslint-plugin-eslint-comments": "3.1.2",
 		"eslint-plugin-import": "2.18.2",
 		"fast-glob": "2.2.7",
@@ -126,7 +128,7 @@
 		"parcel-bundler": "1.12.3",
 		"postcss": "7.0.13",
 		"progress": "2.0.3",
-		"react": "16.9.0",
+		"react": "16.8.6",
 		"react-dom": "16.9.0",
 		"react-native": "0.60.0",
 		"react-test-renderer": "16.9.0",
