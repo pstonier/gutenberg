@@ -260,6 +260,7 @@ class URLInput extends Component {
 			className,
 			id,
 			isFullWidth,
+			label,
 			hasBorder,
 			__experimentalRenderSuggestions: renderSuggestions,
 			placeholder = __( 'Paste URL or type to search' ),
