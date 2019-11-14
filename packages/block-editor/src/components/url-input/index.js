@@ -256,9 +256,9 @@ class URLInput extends Component {
 
 	render() {
 		const {
+			label,
 			instanceId,
 			className,
-			id,
 			isFullWidth,
 			label,
 			hasBorder,
@@ -274,6 +274,7 @@ class URLInput extends Component {
 			selectedSuggestion,
 			loading,
 		} = this.state;
+		const id = `url-input-control-${ instanceId }`;
 
 		const suggestionsListboxId = `block-editor-url-input-suggestions-${ instanceId }`;
 		const suggestionOptionIdPrefix = `block-editor-url-input-suggestion-${ instanceId }`;
