@@ -80,6 +80,12 @@ exports[`List can undo asterisk transform 1`] = `
 <!-- /wp:paragraph -->"
 `;
 
+exports[`List first empty list item is graciously removed 1`] = `
+"<!-- wp:list -->
+<ul><li>2</li></ul>
+<!-- /wp:list -->"
+`;
+
 exports[`List should be immeadiately saved on indentation 1`] = `
 "<!-- wp:list -->
 <ul><li>one<ul><li></li></ul></li></ul>
@@ -297,6 +303,12 @@ exports[`List should split into two with paragraph and merge lists 3`] = `
 `;
 
 exports[`List should undo asterisk transform with backspace 1`] = `
+"<!-- wp:paragraph -->
+<p>* </p>
+<!-- /wp:paragraph -->"
+`;
+
+exports[`List should undo asterisk transform with backspace after mouse move 1`] = `
 "<!-- wp:paragraph -->
 <p>* </p>
 <!-- /wp:paragraph -->"

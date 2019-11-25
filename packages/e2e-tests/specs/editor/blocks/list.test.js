@@ -72,6 +72,15 @@ describe( 'List', () => {
 		expect( await getEditedPostContent() ).toMatchSnapshot();
 	} );
 
+	it( 'should undo asterisk transform with backspace after mouse move', async () => {
+		await clickBlockAppender();
+		await page.keyboard.type( '* ' );
+		await page.mouse.move( 0, 0, { steps: 10 } );
+		await page.keyboard.press( 'Backspace' );
+
+		expect( await getEditedPostContent() ).toMatchSnapshot();
+	} );
+
 	it( 'should undo asterisk transform with backspace after selection changes without requestIdleCallback', async () => {
 		await clickBlockAppender();
 		await page.evaluate( () => delete window.requestIdleCallback );
@@ -475,6 +484,18 @@ describe( 'List', () => {
 
 		// Merge forward. No list items should be joined.
 		await page.keyboard.press( 'Delete' );
+
+		expect( await getEditedPostContent() ).toMatchSnapshot();
+	} );
+
+	it( 'first empty list item is graciously removed', async () => {
+		await clickBlockAppender();
+		await page.keyboard.type( '* 1' );
+		await page.keyboard.press( 'Enter' );
+		await page.keyboard.type( '2' );
+		await page.keyboard.press( 'ArrowUp' );
+		await page.keyboard.press( 'Backspace' );
+		await page.keyboard.press( 'Backspace' );
 
 		expect( await getEditedPostContent() ).toMatchSnapshot();
 	} );
