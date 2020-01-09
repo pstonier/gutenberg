@@ -30,6 +30,12 @@ export const EXPECTED_TRANSFORMS = {
 			'Group',
 		],
 	},
+	core__buttons: {
+		originalBlock: 'Buttons',
+		availableTransforms: [
+			'Group',
+		],
+	},
 	core__calendar: {
 		originalBlock: 'Calendar',
 		availableTransforms: [
@@ -719,6 +725,12 @@ export const EXPECTED_TRANSFORMS = {
 		],
 	},
 	core__table: {
+		originalBlock: 'Table',
+		availableTransforms: [
+			'Group',
+		],
+	},
+	core__table__caption: {
 		originalBlock: 'Table',
 		availableTransforms: [
 			'Group',

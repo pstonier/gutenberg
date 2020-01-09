@@ -7,8 +7,8 @@ MediaPlaceholder
 
 An example usage which sets the URL of the selected image to `theImage` attributes.
 
-```
-const { MediaPlaceholder } = wp.editor;
+```js
+const { MediaPlaceholder } = wp.blockEditor;
 
 ...
 

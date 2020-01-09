@@ -1,63 +1,104 @@
 /**
- * External dependencies
- */
-import classnames from 'classnames';
-
-/**
  * WordPress dependencies
  */
-import { Component } from '@wordpress/element';
-import { withSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
+import { Popover } from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import Inserter from '../inserter';
 
-class BlockInsertionPoint extends Component {
-	constructor() {
-		super( ...arguments );
-		this.state = {
-			isInserterFocused: false,
-		};
-
-		this.onBlurInserter = this.onBlurInserter.bind( this );
-		this.onFocusInserter = this.onFocusInserter.bind( this );
-	}
-
-	onFocusInserter( event ) {
-		// Stop propagation of the focus event to avoid selecting the current
-		// block while inserting a new block, as it is not relevant to sibling
-		// insertion and conflicts with contextual toolbar placement.
-		event.stopPropagation();
-
-		this.setState( {
-			isInserterFocused: true,
-		} );
-	}
-
-	onBlurInserter() {
-		this.setState( {
-			isInserterFocused: false,
-		} );
-	}
-
-	render() {
-		const { isInserterFocused } = this.state;
+function Indicator( { clientId } ) {
+	const showInsertionPoint = useSelect( ( select ) => {
 		const {
-			showInsertionPoint,
-			rootClientId,
-			clientId,
-		} = this.props;
-
+			getBlockIndex,
+			getBlockInsertionPoint,
+			isBlockInsertionPointVisible,
+			getBlockRootClientId,
+		} = select( 'core/block-editor' );
+		const rootClientId = getBlockRootClientId( clientId );
+		const blockIndex = getBlockIndex( clientId, rootClientId );
+		const insertionPoint = getBlockInsertionPoint();
 		return (
-			<div className="editor-block-list__insertion-point block-editor-block-list__insertion-point">
-				{ showInsertionPoint && (
-					<div className="editor-block-list__insertion-point-indicator block-editor-block-list__insertion-point-indicator" />
-				) }
+			isBlockInsertionPointVisible() &&
+			insertionPoint.index === blockIndex &&
+			insertionPoint.rootClientId === rootClientId
+		);
+	}, [ clientId ] );
+
+	if ( ! showInsertionPoint ) {
+		return null;
+	}
+
+	return <div className="block-editor-block-list__insertion-point-indicator" />;
+}
+
+export default function InsertionPoint( {
+	className,
+	isMultiSelecting,
+	selectedBlockClientId,
+	children,
+} ) {
+	const [ isInserterShown, setIsInserterShown ] = useState( false );
+	const [ isInserterForced, setIsInserterForced ] = useState( false );
+	const [ inserterElement, setInserterElement ] = useState( null );
+	const [ inserterClientId, setInserterClientId ] = useState( null );
+
+	function onMouseMove( event ) {
+		if ( event.target.className !== className ) {
+			if ( isInserterShown ) {
+				setIsInserterShown( false );
+			}
+			return;
+		}
+
+		const rect = event.target.getBoundingClientRect();
+		const offset = event.clientY - rect.top;
+		const element = Array.from( event.target.children ).find( ( blockEl ) => {
+			return blockEl.offsetTop > offset;
+		} );
+
+		if ( ! element ) {
+			return;
+		}
+
+		const clientId = element.id.slice( 'block-'.length );
+
+		if ( ! clientId || clientId === selectedBlockClientId ) {
+			return;
+		}
+
+		const elementRect = element.getBoundingClientRect();
+
+		if ( event.clientX > elementRect.right || event.clientX < elementRect.left ) {
+			if ( isInserterShown ) {
+				setIsInserterShown( false );
+			}
+			return;
+		}
+
+		setIsInserterShown( true );
+		setInserterElement( element );
+		setInserterClientId( clientId );
+	}
+
+	return <>
+		{ ! isMultiSelecting && ( isInserterShown || isInserterForced ) && <Popover
+			noArrow
+			animate={ false }
+			anchorRef={ inserterElement }
+			position="top right left"
+			focusOnMount={ false }
+			className="block-editor-block-list__block-popover"
+			__unstableSlotName="block-toolbar"
+		>
+			<div className="block-editor-block-list__insertion-point" style={ { width: inserterElement.offsetWidth } }>
+				<Indicator clientId={ inserterClientId } />
 				<div
-					onFocus={ this.onFocusInserter }
-					onBlur={ this.onBlurInserter }
+					onFocus={ () => setIsInserterForced( true ) }
+					onBlur={ () => setIsInserterForced( false ) }
 					// While ideally it would be enough to capture the
 					// bubbling focus event from the Inserter, due to the
 					// characteristics of click focusing of `button`s in
@@ -65,34 +106,14 @@ class BlockInsertionPoint extends Component {
 					//
 					// See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#Clicking_and_focus
 					tabIndex={ -1 }
-					className={
-						classnames( 'editor-block-list__insertion-point-inserter block-editor-block-list__insertion-point-inserter', {
-							'is-visible': isInserterFocused,
-						} )
-					}
+					className="block-editor-block-list__insertion-point-inserter"
 				>
-					<Inserter
-						rootClientId={ rootClientId }
-						clientId={ clientId }
-					/>
+					<Inserter clientId={ inserterClientId } />
 				</div>
 			</div>
-		);
-	}
+		</Popover> }
+		<div onMouseMove={ ! isInserterForced && ! isMultiSelecting ? onMouseMove : undefined }>
+			{ children }
+		</div>
+	</>;
 }
-export default withSelect( ( select, { clientId, rootClientId } ) => {
-	const {
-		getBlockIndex,
-		getBlockInsertionPoint,
-		isBlockInsertionPointVisible,
-	} = select( 'core/block-editor' );
-	const blockIndex = getBlockIndex( clientId, rootClientId );
-	const insertionPoint = getBlockInsertionPoint();
-	const showInsertionPoint = (
-		isBlockInsertionPointVisible() &&
-		insertionPoint.index === blockIndex &&
-		insertionPoint.rootClientId === rootClientId
-	);
-
-	return { showInsertionPoint };
-} )( BlockInsertionPoint );

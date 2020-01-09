@@ -1,33 +1,102 @@
 /**
+ * External dependencies
+ */
+import classnames from 'classnames';
+
+/**
  * WordPress dependencies
  */
-import { withSelect } from '@wordpress/data';
+import { useSelect } from '@wordpress/data';
+import { Toolbar } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
-import BlockSwitcher from '../block-switcher';
-import MultiBlocksSwitcher from '../block-switcher/multi-blocks-switcher';
+
 import BlockControls from '../block-controls';
 import BlockFormatControls from '../block-format-controls';
 import BlockSettingsMenu from '../block-settings-menu';
+import BlockSwitcher from '../block-switcher';
+import MultiBlocksSwitcher from '../block-switcher/multi-blocks-switcher';
+import BlockMover from '../block-mover';
+import Inserter from '../inserter';
 
-function BlockToolbar( { blockClientIds, isValid, mode } ) {
+export default function BlockToolbar( { moverDirection, hasMovers = true } ) {
+	const { blockClientIds, isValid, mode, rootClientId } = useSelect( ( select ) => {
+		const {
+			getBlockMode,
+			getSelectedBlockClientIds,
+			isBlockValid,
+			getBlockRootClientId,
+		} = select( 'core/block-editor' );
+		const selectedBlockClientIds = getSelectedBlockClientIds();
+
+		return {
+			blockClientIds: selectedBlockClientIds,
+			rootClientId: getBlockRootClientId( selectedBlockClientIds[ 0 ] ),
+			isValid: selectedBlockClientIds.length === 1 ?
+				isBlockValid( selectedBlockClientIds[ 0 ] ) :
+				null,
+			mode: selectedBlockClientIds.length === 1 ?
+				getBlockMode( selectedBlockClientIds[ 0 ] ) :
+				null,
+		};
+	}, [] );
+	const [ isInserterShown, setIsInserterShown ] = useState( false );
+
 	if ( blockClientIds.length === 0 ) {
 		return null;
 	}
 
+	function onFocus() {
+		setIsInserterShown( true );
+	}
+
+	function onBlur() {
+		setIsInserterShown( false );
+	}
+
+	const inserter = (
+		<Toolbar
+			onFocus={ onFocus }
+			onBlur={ onBlur }
+			// While ideally it would be enough to capture the
+			// bubbling focus event from the Inserter, due to the
+			// characteristics of click focusing of `button`s in
+			// Firefox and Safari, it is not reliable.
+			//
+			// See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button#Clicking_and_focus
+			tabIndex={ -1 }
+			className={ classnames(
+				'block-editor-block-toolbar__inserter',
+				{ 'is-visible': isInserterShown }
+			) }
+		>
+			<Inserter clientId={ blockClientIds[ 0 ] } rootClientId={ rootClientId } />
+		</Toolbar>
+	);
+
 	if ( blockClientIds.length > 1 ) {
 		return (
-			<div className="editor-block-toolbar block-editor-block-toolbar">
+			<div className="block-editor-block-toolbar">
+				{ hasMovers && ( <BlockMover
+					clientIds={ blockClientIds }
+					__experimentalOrientation={ moverDirection }
+				/> ) }
 				<MultiBlocksSwitcher />
 				<BlockSettingsMenu clientIds={ blockClientIds } />
+				{ inserter }
 			</div>
 		);
 	}
 
 	return (
-		<div className="editor-block-toolbar block-editor-block-toolbar">
+		<div className="block-editor-block-toolbar">
+			{ hasMovers && ( <BlockMover
+				clientIds={ blockClientIds }
+				__experimentalOrientation={ moverDirection }
+			/> ) }
 			{ mode === 'visual' && isValid && (
 				<>
 					<BlockSwitcher clientIds={ blockClientIds } />
@@ -36,21 +105,7 @@ function BlockToolbar( { blockClientIds, isValid, mode } ) {
 				</>
 			) }
 			<BlockSettingsMenu clientIds={ blockClientIds } />
+			{ inserter }
 		</div>
 	);
 }
-
-export default withSelect( ( select ) => {
-	const {
-		getBlockMode,
-		getSelectedBlockClientIds,
-		isBlockValid,
-	} = select( 'core/block-editor' );
-	const blockClientIds = getSelectedBlockClientIds();
-
-	return {
-		blockClientIds,
-		isValid: blockClientIds.length === 1 ? isBlockValid( blockClientIds[ 0 ] ) : null,
-		mode: blockClientIds.length === 1 ? getBlockMode( blockClientIds[ 0 ] ) : null,
-	};
-} )( BlockToolbar );

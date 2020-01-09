@@ -77,8 +77,10 @@ class EditorProvider extends Component {
 	getBlockEditorSettings(
 		settings,
 		reusableBlocks,
+		__experimentalFetchReusableBlocks,
 		hasUploadPermissions,
-		canUserUseUnfilteredHTML
+		canUserUseUnfilteredHTML,
+		undo,
 	) {
 		return {
 			...pick( settings, [
@@ -91,6 +93,7 @@ class EditorProvider extends Component {
 				'colors',
 				'disableCustomColors',
 				'disableCustomFontSizes',
+				'disableCustomGradients',
 				'focusMode',
 				'fontSizes',
 				'hasFixedToolbar',
@@ -106,13 +109,17 @@ class EditorProvider extends Component {
 				'__experimentalEnableLegacyWidgetBlock',
 				'__experimentalBlockDirectory',
 				'__experimentalEnableFullSiteEditing',
+				'__experimentalEnableFullSiteEditingDemo',
+				'__experimentalEnablePageTemplates',
 				'showInserterHelpPanel',
 				'gradients',
 			] ),
 			mediaUpload: hasUploadPermissions ? mediaUpload : undefined,
 			__experimentalReusableBlocks: reusableBlocks,
+			__experimentalFetchReusableBlocks,
 			__experimentalFetchLinkSuggestions: fetchLinkSuggestions,
 			__experimentalCanUserUseUnfilteredHTML: canUserUseUnfilteredHTML,
+			__experimentalUndo: undo,
 		};
 	}
 
@@ -158,6 +165,8 @@ class EditorProvider extends Component {
 			reusableBlocks,
 			resetEditorBlocksWithoutUndoLevel,
 			hasUploadPermissions,
+			__experimentalFetchReusableBlocks,
+			undo,
 		} = this.props;
 
 		if ( ! isReady ) {
@@ -167,8 +176,10 @@ class EditorProvider extends Component {
 		const editorSettings = this.getBlockEditorSettings(
 			settings,
 			reusableBlocks,
+			__experimentalFetchReusableBlocks,
 			hasUploadPermissions,
 			canUserUseUnfilteredHTML,
+			undo,
 		);
 
 		return (
@@ -222,7 +233,9 @@ export default compose( [
 			updatePostLock,
 			resetEditorBlocks,
 			updateEditorSettings,
+			__experimentalFetchReusableBlocks,
 			__experimentalTearDownEditor,
+			undo,
 		} = dispatch( 'core/editor' );
 		const { createWarningNotice } = dispatch( 'core/notices' );
 
@@ -239,6 +252,8 @@ export default compose( [
 				} );
 			},
 			tearDownEditor: __experimentalTearDownEditor,
+			__experimentalFetchReusableBlocks,
+			undo,
 		};
 	} ),
 ] )( EditorProvider );

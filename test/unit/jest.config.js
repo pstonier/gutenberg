@@ -14,6 +14,7 @@ module.exports = {
 	},
 	preset: '@wordpress/jest-preset-default',
 	setupFiles: [
+		'<rootDir>/test/unit/config/global-mocks.js',
 		'<rootDir>/test/unit/config/gutenberg-phase.js',
 		'<rootDir>/test/unit/config/register-context.js',
 	],
@@ -30,4 +31,5 @@ module.exports = {
 	transform: {
 		'^.+\\.[jt]sx?$': '<rootDir>/test/unit/scripts/babel-transformer.js',
 	},
+	snapshotSerializers: [ 'enzyme-to-json/serializer', 'jest-emotion' ],
 };
