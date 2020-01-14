@@ -113,12 +113,16 @@ class InnerBlocks extends Component {
 			templateLock,
 			parentLock,
 			__experimentalCaptureToolbars,
+			__experimentalMoverDirection,
+			__experimentalUIParts,
 		} = this.props;
 
 		const newSettings = {
 			allowedBlocks,
 			templateLock: templateLock === undefined ? parentLock : templateLock,
 			__experimentalCaptureToolbars: __experimentalCaptureToolbars || false,
+			__experimentalMoverDirection,
+			__experimentalUIParts,
 		};
 
 		if ( ! isShallowEqual( blockListSettings, newSettings ) ) {

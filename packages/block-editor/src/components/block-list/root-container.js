@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { useRef, createContext } from '@wordpress/element';
+import { createContext, forwardRef } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
@@ -10,6 +10,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import useMultiSelection from './use-multi-selection';
 import { getBlockClientId } from '../../utils/dom';
 import InsertionPoint from './insertion-point';
+import BlockPopover from './block-popover';
 
 /** @typedef {import('@wordpress/element').WPSyntheticEvent} WPSyntheticEvent */
 
@@ -44,8 +45,7 @@ function onDragStart( event ) {
 	}
 }
 
-export default function RootContainer( { children, className } ) {
-	const ref = useRef();
+function RootContainer( { children, className }, ref ) {
 	const {
 		selectedBlockClientId,
 		hasMultiSelection,
@@ -79,6 +79,7 @@ export default function RootContainer( { children, className } ) {
 			isMultiSelecting={ isMultiSelecting }
 			selectedBlockClientId={ selectedBlockClientId }
 		>
+			<BlockPopover />
 			<div
 				ref={ ref }
 				className={ className }
@@ -92,3 +93,5 @@ export default function RootContainer( { children, className } ) {
 		</InsertionPoint>
 	);
 }
+
+export default forwardRef( RootContainer );
