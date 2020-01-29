@@ -93,7 +93,7 @@ class LatestPostsEdit extends Component {
 
 		const inspectorControls = (
 			<InspectorControls>
-				<PanelBody title={ __( 'Post Content Settings' ) }>
+				<PanelBody title={ __( 'Post content settings' ) }>
 					<ToggleControl
 						label={ __( 'Post Content' ) }
 						checked={ displayPostContent }
@@ -121,7 +121,7 @@ class LatestPostsEdit extends Component {
 					}
 				</PanelBody>
 
-				<PanelBody title={ __( 'Post Meta Settings' ) }>
+				<PanelBody title={ __( 'Post meta settings' ) }>
 					<ToggleControl
 						label={ __( 'Display post date' ) }
 						checked={ displayPostDate }
@@ -129,7 +129,7 @@ class LatestPostsEdit extends Component {
 					/>
 				</PanelBody>
 
-				<PanelBody title={ __( 'Sorting and Filtering' ) }>
+				<PanelBody title={ __( 'Sorting and filtering' ) }>
 					<QueryControls
 						{ ...{ order, orderBy } }
 						numberOfItems={ postsToShow }
